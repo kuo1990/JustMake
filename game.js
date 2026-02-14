@@ -136,10 +136,43 @@ class JustMakeGame {
             overlayMessage: document.getElementById('overlay-message'),
             overlayBtn: document.getElementById('overlay-btn'),
             overlayIcon: document.getElementById('overlay-icon'),
-            overlayContent: document.querySelector('.overlay-content')
+            overlayContent: document.querySelector('.overlay-content'),
+            diceCup: document.getElementById('dice-cup')
         };
 
         this.initEventListeners();
+        this.updateSetupPreview();
+// ... (rest of simple init)
+
+// IN handleMotion:
+        // Continuous Shake Sound & Visual Logic
+        if (speed > shakeThreshold) {
+            this.shakeState.shakeStartTime = currentTime;
+            if (!this.shakeState.isShaking) {
+                this.shakeState.isShaking = true;
+                this.audio.playShake();
+                
+                // Show Cup and Shake
+                this.ui.diceCup.classList.remove('hidden', 'lift-up');
+                this.ui.diceCup.classList.add('shaking');
+            }
+        } else {
+            // Stop sound if shaking stops for 300ms
+            if (this.shakeState.isShaking && (currentTime - this.shakeState.shakeStartTime > 300)) {
+                this.shakeState.isShaking = false;
+                this.audio.stopShake();
+                this.ui.diceCup.classList.remove('shaking');
+            }
+        }
+
+        // Trigger Throw
+        if (speed > throwThreshold) {
+            this.audio.stopShake(); 
+            this.shakeState.isShaking = false;
+            this.ui.diceCup.classList.remove('shaking');
+            this.playTurn();
+        }
+// ...
         this.updateSetupPreview();
 
         // Unlock audio context on user interaction
@@ -211,12 +244,16 @@ class JustMakeGame {
             if (!this.shakeState.isShaking) {
                 this.shakeState.isShaking = true;
                 this.audio.playShake();
+                // Show Cup and Shake
+                this.ui.diceCup.classList.remove('hidden', 'lift-up');
+                this.ui.diceCup.classList.add('shaking');
             }
         } else {
             // Stop sound if shaking stops for 300ms
             if (this.shakeState.isShaking && (currentTime - this.shakeState.shakeStartTime > 300)) {
                 this.shakeState.isShaking = false;
                 this.audio.stopShake();
+                this.ui.diceCup.classList.remove('shaking');
             }
         }
 
@@ -224,6 +261,7 @@ class JustMakeGame {
         if (speed > throwThreshold) {
             this.audio.stopShake(); // Stop looping sound
             this.shakeState.isShaking = false;
+            this.ui.diceCup.classList.remove('shaking');
             this.playTurn();
         }
 
@@ -374,8 +412,12 @@ class JustMakeGame {
         this.gameStatus = 'ROLLING';
         this.ui.rollBtn.disabled = true;
         this.audio.stopShake(); // Ensure shake sound stops
+        
+        // Lift the Cup!
+        this.ui.diceCup.classList.remove('shaking', 'hidden');
+        this.ui.diceCup.classList.add('lift-up');
 
-        // 1. Shake Phase (0.8s)
+        // 1. Shake Phase (0.8s) - Original container shake
         this.ui.diceContainer.classList.add('shaking');
         this.ui.diceContainer.innerHTML = '';
 
