@@ -357,10 +357,11 @@ class JustMakeGame {
         const popup = document.querySelector('.points-popup');
         if (popup) popup.remove();
 
-        const placeholder = this.ui.diceContainer.querySelector('.placeholder-text');
-        if (this.gameStatus !== 'SETUP' && placeholder) {
-            placeholder.remove();
-        }
+        // Placeholder handling is now done in nextTurn (add) and playTurn (remove)
+        // const placeholder = this.ui.diceContainer.querySelector('.placeholder-text');
+        // if (this.gameStatus !== 'SETUP' && placeholder) {
+        //    placeholder.remove();
+        // }
 
         this.updateLeaderboard(); // Sync Leaderboard Highlight
     }
