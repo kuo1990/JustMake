@@ -970,3 +970,73 @@ h1.logo {
         transform: scale(1.2) rotate(10deg);
     }
 }
+/* Snackbar Notification */
+.snackbar {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: white;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    border-radius: 50px;
+    padding: 1rem 2rem;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    z-index: 2000;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    min-width: 300px;
+    max-width: 90%;
+    border: 2px solid #EEE;
+    opacity: 1;
+}
+
+.snackbar.hidden {
+    bottom: -100px;
+    opacity: 0;
+}
+
+.snackbar-icon {
+    font-size: 2rem;
+}
+
+.snackbar-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.snackbar-title {
+    font-weight: 800;
+    font-size: 1.1rem;
+    color: #333;
+}
+
+.snackbar-message {
+    font-size: 0.9rem;
+    color: #666;
+}
+
+/* Snackbar Types */
+.snackbar.normal {
+    border-color: #FFD700;
+}
+.snackbar.normal .snackbar-icon {
+    text-shadow: 0 2px 0 rgba(0,0,0,0.1);
+}
+
+.snackbar.bounce-back {
+    border-color: #D32F2F;
+    background: #FFEBEE;
+}
+.snackbar.bounce-back .snackbar-title {
+    color: #D32F2F;
+}
+
+/* Mobile responsive fixes */
+@media (max-width: 600px) {
+    .snackbar {
+        width: 90%;
+        padding: 0.8rem 1.5rem;
+        border-radius: 16px;
+    }
+}
