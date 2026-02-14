@@ -513,9 +513,71 @@ h1.logo {
     display: none !important;
 }
 
-/* Bowl Shaking Animation - Keep existing */
+/* Bowl Shaking Animation */
 .dice-bowl.shaking {
     animation: shakeBowl 0.5s infinite;
+}
+
+/* Red Dice Cup Overlay */
+.dice-cup {
+    position: absolute;
+    top: -50px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 200px;
+    /* Adjust size based on design */
+    height: 250px;
+    background-image: url('./assets/dice_cup_red.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    z-index: 20;
+    /* Above dice */
+    pointer-events: none;
+    transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    opacity: 0;
+    display: none;
+}
+
+.dice-cup.visible {
+    display: block;
+    opacity: 1;
+}
+
+.dice-cup.shaking {
+    display: block;
+    opacity: 1;
+    animation: cupShakeHard 0.08s infinite linear;
+}
+
+/* Cup Lift Animation (Reveal) */
+.dice-cup.lift-up {
+    display: block;
+    opacity: 0;
+    transform: translateX(-50%) translateY(-150px) rotate(-15deg);
+    transition: all 0.5s ease-out;
+}
+
+@keyframes cupShakeHard {
+    0% {
+        transform: translateX(-50%) translate(2px, 2px) rotate(0deg);
+    }
+
+    25% {
+        transform: translateX(-50%) translate(-2px, -3px) rotate(-3deg);
+    }
+
+    50% {
+        transform: translateX(-50%) translate(3px, -2px) rotate(3deg);
+    }
+
+    75% {
+        transform: translateX(-50%) translate(-3px, 2px) rotate(-2deg);
+    }
+
+    100% {
+        transform: translateX(-50%) translate(0, 0) rotate(0deg);
+    }
 }
 
 @keyframes shakeBowl {

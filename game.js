@@ -132,7 +132,8 @@ class JustMakeGame {
             overlayMessage: document.getElementById('overlay-message'),
             overlayBtn: document.getElementById('overlay-btn'),
             overlayIcon: document.getElementById('overlay-icon'),
-            overlayContent: document.querySelector('.overlay-content')
+            overlayContent: document.querySelector('.overlay-content'),
+            diceCupOverlay: document.getElementById('dice-cup-overlay')
         };
 
         this.shakeState = {
@@ -409,9 +410,13 @@ createDieHTMLElement(value, existingDice) {
     this.ui.rollBtn.disabled = true;
     this.audio.stopShake(); // Ensure shake sound stops
 
-    // 1. Shake Phase (0.8s) - Original container shake
-    this.ui.diceContainer.classList.add('shaking');
+    // 1. Shake Phase (0.8s) - Show Red Cup
     this.ui.diceContainer.innerHTML = '';
+    this.ui.diceCupOverlay.classList.remove('hidden', 'lift-up');
+    this.ui.diceCupOverlay.classList.add('visible', 'shaking');
+
+    // Allow container to shake too? maybe not needed if cup shakes
+    // this.ui.diceContainer.classList.add('shaking'); 
 
     let shakeInterval;
     if (isCupRoll) {
@@ -425,9 +430,15 @@ createDieHTMLElement(value, existingDice) {
 
     if (isCupRoll && shakeInterval) {
         clearInterval(shakeInterval);
-        this.audio.stopShake(); // STOP the sound!
+        this.audio.stopShake();
     }
-    this.ui.diceContainer.classList.remove('shaking');
+
+    this.ui.diceCupOverlay.classList.remove('shaking');
+    // Lift Cup to Reveal
+    this.ui.diceCupOverlay.classList.add('lift-up');
+
+    // Wait for lift animation (0.3s) before showing dice fully?
+    await new Promise(r => setTimeout(r, 200));
 
     // 2. Land Phase
     this.audio.playClack();
