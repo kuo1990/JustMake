@@ -195,6 +195,41 @@ h1.logo {
     width: 100%;
 }
 
+.btn-text-small {
+    /* Absolute positioning for Top-Left */
+    position: absolute;
+    top: 20px;
+    left: 20px;
+
+    /* Fancy "炫懶" UI */
+    background: linear-gradient(135deg, #FFD700, #FFA000);
+    /* Gold Gradient */
+    border: 2px solid #FFF;
+    color: #8B0000;
+    /* Dark Red Text */
+    font-size: 0.9rem;
+    font-weight: 800;
+    cursor: pointer;
+    padding: 0.6rem 1.2rem;
+    border-radius: 30px;
+    box-shadow: 0 4px 10px rgba(255, 215, 0, 0.4), inset 0 2px 5px rgba(255, 255, 255, 0.5);
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    z-index: 100;
+    letter-spacing: 1px;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+.btn-text-small:hover {
+    transform: scale(1.1) translateY(-2px);
+    box-shadow: 0 6px 15px rgba(255, 215, 0, 0.6), inset 0 2px 5px rgba(255, 255, 255, 0.8);
+    background: linear-gradient(135deg, #FFE57F, #FFC107);
+}
+
+.btn-text-small:active {
+    transform: scale(0.95);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
 .btn-primary:active,
 .btn-action:active {
     transform: translateY(5px);
