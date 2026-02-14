@@ -629,24 +629,64 @@ h1.logo {
     margin-top: 10px;
 }
 
+.log-entry {
+    display: grid;
+    grid-template-columns: 1fr 60px 80px;
+    /* Name, Points, Amount */
+    align-items: center;
+    padding: 0.8rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    font-size: 0.95rem;
+    gap: 10px;
+}
+
 .log-player {
     display: flex;
     align-items: center;
-    gap: 5px;
+    gap: 0.5rem;
     font-weight: bold;
+    color: #555;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.log-entry {
+    display: grid;
+    grid-template-columns: 1fr 60px 80px;
+    /* Name, Points, Amount */
+    align-items: center;
+    padding: 0.8rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    font-size: 0.95rem;
+    gap: 10px;
+}
+
+.log-player {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: bold;
+    color: #555;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
 
 .log-result {
     font-family: monospace;
-    font-size: 0.85rem;
+    font-size: 0.95rem;
     color: #666;
-    margin: 0 5px;
+    text-align: center;
+    /* Center the points */
 }
 
 .log-amount {
     font-weight: 900;
+    text-align: right;
 }
 
+/* Specific colors for amount */
 .log-amount.positive {
     color: var(--text-red);
 }
