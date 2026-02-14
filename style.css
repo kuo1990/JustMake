@@ -267,16 +267,6 @@ h1.logo {
     align-items: center;
 }
 
-.game-header {
-    text-align: center;
-    margin-bottom: 1rem;
-    position: relative;
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
 .btn-icon-small {
     position: absolute;
     left: 0;
@@ -436,20 +426,6 @@ h1.logo {
 }
 
 /* Absolute Dice Positioning */
-.die {
-    width: 50px;
-    height: 50px;
-    background-color: #f7f7f7;
-    border-radius: 8px;
-    box-shadow: inset -2px -2px 5px rgba(0, 0, 0, 0.1), 0 5px 10px rgba(0, 0, 0, 0.3);
-    display: grid;
-    grid-template: repeat(3, 1fr) / repeat(3, 1fr);
-    padding: 3px;
-    position: absolute;
-    /* Changed from grid */
-    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-
 /* Pips (Dots) - Same as before */
 .pip {
     background-color: #222;
@@ -458,17 +434,6 @@ h1.logo {
     height: 8px;
     margin: auto;
     box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.5);
-}
-
-/* Special Red Pips for 1 and 4 */
-.die[data-value="1"] .pip {
-    background-color: #D32F2F;
-    width: 20px;
-    height: 20px;
-}
-
-.die[data-value="4"] .pip {
-    background-color: #D32F2F;
 }
 
 /* DIce Face Images (SVG) */
@@ -625,11 +590,36 @@ h1.logo {
 }
 
 .log-entry {
-    padding: 8px 5px;
-    border-bottom: 1px solid #eee;
-    display: flex;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: 1fr 60px 80px;
+    /* Name, Points, Amount */
     align-items: center;
+    padding: 0.8rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    font-size: 0.95rem;
+    gap: 10px;
+}
+
+.log-entry:last-child {
+    border-bottom: none;
+}
+
+.log-entry.placeholder {
+    color: #999;
+    text-align: center;
+    display: block;
+    margin-top: 10px;
+}
+
+.log-player {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: bold;
+    color: #555;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
 
 /* Desktop Responsiveness - Sidebar Layout */
@@ -671,61 +661,6 @@ h1.logo {
     }
 }
 
-.log-entry:last-child {
-    border-bottom: none;
-}
-
-.log-entry.placeholder {
-    color: #999;
-    text-align: center;
-    display: block;
-    margin-top: 10px;
-}
-
-.log-entry {
-    display: grid;
-    grid-template-columns: 1fr 60px 80px;
-    /* Name, Points, Amount */
-    align-items: center;
-    padding: 0.8rem;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-    font-size: 0.95rem;
-    gap: 10px;
-}
-
-.log-player {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-weight: bold;
-    color: #555;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-}
-
-.log-entry {
-    display: grid;
-    grid-template-columns: 1fr 60px 80px;
-    /* Name, Points, Amount */
-    align-items: center;
-    padding: 0.8rem;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-    font-size: 0.95rem;
-    gap: 10px;
-}
-
-.log-player {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-weight: bold;
-    color: #555;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-}
-
 .log-result {
     font-family: monospace;
     font-size: 0.95rem;
@@ -753,32 +688,7 @@ h1.logo {
     text-shadow: 0 0 2px #000;
 }
 
-/* Bowl Shaking Animation */
-.dice-bowl.shaking {
-    animation: shakeBowl 0.5s infinite;
-}
 
-@keyframes shakeBowl {
-    0% {
-        transform: translate(0, 0) rotate(0deg);
-    }
-
-    25% {
-        transform: translate(-5px, 5px) rotate(-5deg);
-    }
-
-    50% {
-        transform: translate(5px, -5px) rotate(5deg);
-    }
-
-    75% {
-        transform: translate(-5px, -5px) rotate(-5deg);
-    }
-
-    100% {
-        transform: translate(0, 0) rotate(0deg);
-    }
-}
 
 /* Turn Info Card */
 .turn-info-card {
