@@ -364,8 +364,8 @@ class JustMakeGame {
         }
 
         const rotate = Math.random() * 360;
-        die.style.top = `${top} px`;
-        die.style.left = `${left} px`;
+        die.style.top = `${top}px`;
+        die.style.left = `${left}px`;
         die.style.transform = `rotate(${rotate}deg)`;
 
         // Save pos for next check
