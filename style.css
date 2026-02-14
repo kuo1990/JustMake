@@ -326,19 +326,18 @@ h1.logo {
 }
 
 .dice-bowl {
-    width: 280px;
-    height: 280px;
-    /* Remove CSS circular styling */
-    border-radius: 0;
+    width: 320px;
+    height: 240px;
+    border-radius: 16px;
     background: transparent;
-    box-shadow: none;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
     border: none;
 
-    /* Use Local Image */
-    background-image: url('treasure_bowl.png');
-    background-size: contain;
-    background-repeat: no-repeat;
+    /* Desk Mat Image */
+    background-image: url('desk_mat.avif');
+    background-size: cover;
     background-position: center;
+    background-repeat: no-repeat;
 
     position: relative;
 }
