@@ -336,10 +336,10 @@ class JustMakeGame {
 
         const points = rolls.reduce((a, b) => a + b, 0);
 
-        // 3. Reveal Phase (Suspense 5.0s per user request)
-        // Show points bubble AFTER delay? Or during? User said "Wait 5s then show details".
-        // Let's settle on: Dice visible -> Wait 4s -> Show Points Bubble -> Wait 1s -> Result.
-        await new Promise(r => setTimeout(r, 4000));
+        // 3. Reveal Phase (Suspense 1.0s per user request)
+        // Show points bubble AFTER delay? Or during? User said "Wait 1s then show details".
+        // Let's settle on: Dice visible -> Wait 1s -> Show Points Bubble -> Wait 2s -> Result.
+        await new Promise(r => setTimeout(r, 1000));
 
         // 4. Show Points Popup
         this.showPointsPopup(points);
