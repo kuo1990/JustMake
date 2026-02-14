@@ -1018,6 +1018,12 @@ h1.logo {
     /* Prevent too wide */
     border: 2px solid #EEE;
     opacity: 1;
+    cursor: pointer;
+}
+
+.snackbar:hover {
+    transform: translateX(-50%) scale(1.02);
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.4);
 }
 
 .snackbar.hidden {

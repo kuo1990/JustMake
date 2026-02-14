@@ -251,6 +251,13 @@ class JustMakeGame {
 
     // ... inside nextTurn ...
     nextTurn() {
+        // Clear any pending snackbar timeout
+        if (this.snackbarTimeout) {
+            clearTimeout(this.snackbarTimeout);
+            this.snackbarTimeout = null;
+            document.getElementById('snackbar').classList.add('hidden');
+        }
+
         this.currentPlayerIndex = (this.currentPlayerIndex + 1) % this.players.length;
         this.gameStatus = 'IDLE';
         this.ui.rollBtn.disabled = false;
@@ -539,12 +546,8 @@ class JustMakeGame {
             amountChange = rollValue;
             this.showFloatingText(rollValue, true); // Pot loses money
 
-            if (rollValue > 0) {
-                this.showOverlay('恭喜發財', `你擲出了 ${points} 點！從獎金池拿走 $${rollValue}。`, 'normal');
-            } else {
-                // Zero points - auto skip after short delay
-                setTimeout(() => this.nextTurn(), 1000);
-            }
+            // Show snackbar for all results including 0 points
+            this.showOverlay('恭喜發財', `你擲出了 ${points} 點！從獎金池拿走 $${rollValue}。`, 'normal');
         }
 
         // 3. Bounce Back (Recall)
@@ -676,6 +679,11 @@ class JustMakeGame {
         const titleEl = sb.querySelector('.snackbar-title');
         const msgEl = sb.querySelector('.snackbar-message');
 
+        // Clear previous timeout if exists
+        if (this.snackbarTimeout) {
+            clearTimeout(this.snackbarTimeout);
+        }
+
         titleEl.textContent = title;
         msgEl.textContent = message;
         sb.className = 'snackbar'; // Reset class
@@ -690,12 +698,28 @@ class JustMakeGame {
 
         sb.classList.remove('hidden');
 
-        // Auto hide after 2.5s and next turn
-        setTimeout(() => {
+        // Make snackbar clickable to skip to next turn
+        const skipToNext = () => {
+            if (this.snackbarTimeout) {
+                clearTimeout(this.snackbarTimeout);
+                this.snackbarTimeout = null;
+            }
             sb.classList.add('hidden');
             if (this.gameStatus !== 'WIN') {
                 this.nextTurn();
             }
+            sb.removeEventListener('click', skipToNext);
+        };
+
+        sb.addEventListener('click', skipToNext, { once: true });
+
+        // Auto hide after 2.5s and next turn
+        this.snackbarTimeout = setTimeout(() => {
+            sb.classList.add('hidden');
+            if (this.gameStatus !== 'WIN') {
+                this.nextTurn();
+            }
+            this.snackbarTimeout = null;
         }, 2500);
     }
 
