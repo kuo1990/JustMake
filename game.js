@@ -223,6 +223,10 @@ class JustMakeGame {
     resetGame() {
         // if(!confirm("確定要重新開始遊戲嗎？")) return; // Removing native confirm for smoother UX
         this.gameStatus = 'SETUP';
+
+        // Clear dice from previous game
+        this.ui.diceContainer.innerHTML = '<div class="placeholder-text">準備好手氣...</div>';
+
         this.ui.gameScreen.classList.remove('active');
         this.ui.setupScreen.classList.add('active');
         this.updateSetupPreview();
