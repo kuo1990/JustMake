@@ -334,8 +334,8 @@ h1.logo {
     box-shadow: none;
     border: none;
 
-    /* Use Generated Image */
-    background-image: url('/Users/kuo/.gemini/antigravity/brain/b0b380d6-8dee-42a6-849d-ca97fbd27514/treasure_bowl_1771029583451.png');
+    /* Use Local Image */
+    background-image: url('treasure_bowl.png');
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
