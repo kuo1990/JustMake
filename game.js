@@ -402,14 +402,18 @@ class JustMakeGame {
         this.ui.diceContainer.classList.add('shaking');
         this.ui.diceContainer.innerHTML = '';
 
-        const shakeInterval = setInterval(() => {
-            this.audio.playShake();
-            if (navigator.vibrate) navigator.vibrate(50);
-        }, 100);
+        // Only play shake sound/vibrate if it's a Cup Roll
+        let shakeInterval;
+        if (isCupRoll) {
+            shakeInterval = setInterval(() => {
+                this.audio.playShake();
+                if (navigator.vibrate) navigator.vibrate(50);
+            }, 100);
+        }
 
         await new Promise(r => setTimeout(r, 800));
 
-        clearInterval(shakeInterval);
+        if (isCupRoll && shakeInterval) clearInterval(shakeInterval);
         this.ui.diceContainer.classList.remove('shaking');
 
         // 2. Land Phase
