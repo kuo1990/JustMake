@@ -237,13 +237,11 @@ class JustMakeGame {
 
         // Hybrid Roll Trigger
         this.ui.rollBtn.addEventListener('click', () => {
-            if (this.shakeState.isShaking) {
-                // If shaking, click means "Throw"
-                this.playTurn(true);
-            } else {
-                // Otherwise normal fast roll
-                this.playTurn(false);
-            }
+            // Force Fast Roll if clicking button, unless shaking is somehow persistent
+            // Actually, if clicking button, it's likely intended as a manual roll.
+            // But if shaking, we want the shake behavior.
+            const isShaking = this.shakeState && this.shakeState.isShaking;
+            this.playTurn(isShaking);
         });
 
         this.ui.overlayBtn.addEventListener('click', () => this.hideOverlay());
@@ -387,7 +385,6 @@ class JustMakeGame {
         this.ui.diceContainer.classList.add('shaking');
         this.ui.diceContainer.innerHTML = '';
 
-        // Only play shake sound/vibrate if it's a Cup Roll (Shake)
         let shakeInterval;
         if (isCupRoll) {
             shakeInterval = setInterval(() => {
