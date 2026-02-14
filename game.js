@@ -1,17 +1,5 @@
+```javascript
 // Audio Controller using Web Audio API & Custom Assets
-class AudioController {
-    constructor() {
-        this.ctx = new (window.AudioContext || window.webkitAudioContext)();
-        this.enabled = true;
-        this.diceSound = new Audio('dice-142528.mp3');
-        this.diceSound.volume = 1.0;
-
-        this.winSound = new Audio('./assets/winner.mov');
-        this.winSound.volume = 1.0;
-    }
-
-    playShake() {
-        if (!this.enabled) return;
         // User requested to remove procedural noise. 
     }
 
@@ -160,6 +148,91 @@ class JustMakeGame {
         }, { once: true });
     }
 
+    setupShakeDetection() {
+        const btn = document.getElementById('shake-perm-btn');
+        
+        // Check if DeviceMotionEvent is defined
+        if (typeof DeviceMotionEvent !== 'undefined') {
+            // iOS 13+ requires permission
+            if (typeof DeviceMotionEvent.requestPermission === 'function') {
+                btn.classList.remove('hidden');
+                btn.onclick = () => {
+                    this.audio.ctx.resume(); // Ensure AudioContext is resumed on click
+                    DeviceMotionEvent.requestPermission()
+                        .then(response => {
+                            if (response === 'granted') {
+                                window.addEventListener('devicemotion', (e) => this.handleMotion(e));
+                                btn.classList.add('hidden');
+                                this.showSnackbar('搖一搖已啟用', '大力甩動手機來擲骰子！', 'normal');
+                            }
+                        })
+                        .catch(console.error);
+                };
+            } else {
+                // Non-iOS 13+ devices (Android or older iOS)
+                window.addEventListener('devicemotion', (e) => this.handleMotion(e));
+            }
+        }
+    }
+
+    handleMotion(event) {
+        if (this.gameStatus !== 'IDLE') return;
+
+        const current = event.accelerationIncludingGravity;
+        if (!current) return;
+
+        const currentTime = Date.now();
+        if ((currentTime - this.shakeState.lastTime) < 100) return; // Throttle 100ms
+
+        const { x, y, z } = current;
+        const { lastX, lastY, lastZ } = this.shakeState;
+
+        if (lastX === null) {
+            this.shakeState.lastX = x;
+            this.shakeState.lastY = y;
+            this.shakeState.lastZ = z;
+            this.shakeState.lastTime = currentTime;
+            return;
+        }
+
+        const deltaX = Math.abs(x - lastX);
+        const deltaY = Math.abs(y - lastY);
+        const deltaZ = Math.abs(z - lastZ);
+        
+        // Sensitivity thresholds
+        const shakeThreshold = 5; // Start "shaking" sound
+        const throwThreshold = 25; // Trigger "throw"
+
+        const speed = deltaX + deltaY + deltaZ;
+
+        // Continuous Shake Sound Logic
+        if (speed > shakeThreshold) {
+            this.shakeState.shakeStartTime = currentTime;
+            if (!this.shakeState.isShaking) {
+                this.shakeState.isShaking = true;
+                this.audio.playShake();
+            }
+        } else {
+            // Stop sound if shaking stops for 300ms
+            if (this.shakeState.isShaking && (currentTime - this.shakeState.shakeStartTime > 300)) {
+                this.shakeState.isShaking = false;
+                this.audio.stopShake();
+            }
+        }
+
+        // Trigger Throw
+        if (speed > throwThreshold) {
+            this.audio.stopShake(); // Stop looping sound
+            this.shakeState.isShaking = false;
+            this.playTurn();
+        }
+
+        this.shakeState.lastX = x;
+        this.shakeState.lastY = y;
+        this.shakeState.lastZ = z;
+        this.shakeState.lastTime = currentTime;
+    }
+
     initEventListeners() {
         document.getElementById('decrease-players').addEventListener('click', () => this.adjustPlayers(-1));
         document.getElementById('increase-players').addEventListener('click', () => this.adjustPlayers(1));
@@ -200,7 +273,7 @@ class JustMakeGame {
 
         this.players = Array.from({ length: playerCount }, (_, i) => ({
             id: i + 1,
-            name: `玩家 ${i + 1}`,
+            name: `玩家 ${ i + 1 } `,
             avatar: shuffledAvatars[i % shuffledAvatars.length], // Use modulo just in case but we have enough
             moneyToken: 0
         }));
@@ -231,7 +304,7 @@ class JustMakeGame {
     }
 
     updateGameUI() {
-        this.ui.currentPotDisplay.textContent = `$${this.potBalance}`;
+        this.ui.currentPotDisplay.textContent = `$${ this.potBalance } `;
         const player = this.players[this.currentPlayerIndex];
         this.ui.playerName.textContent = player.name;
         this.ui.playerAvatar.textContent = player.avatar;
@@ -286,9 +359,9 @@ class JustMakeGame {
         }
 
         const rotate = Math.random() * 360;
-        die.style.top = `${top}px`;
-        die.style.left = `${left}px`;
-        die.style.transform = `rotate(${rotate}deg)`;
+        die.style.top = `${ top } px`;
+        die.style.left = `${ left } px`;
+        die.style.transform = `rotate(${ rotate }deg)`;
 
         // Save pos for next check
         existingDice.push({ top, left });
@@ -300,6 +373,7 @@ class JustMakeGame {
         if (this.gameStatus !== 'IDLE') return;
         this.gameStatus = 'ROLLING';
         this.ui.rollBtn.disabled = true;
+        this.audio.stopShake(); // Ensure shake sound stops
 
         // 1. Shake Phase (0.8s)
         this.ui.diceContainer.classList.add('shaking');
@@ -359,7 +433,7 @@ class JustMakeGame {
 
         const popup = document.createElement('div');
         popup.className = 'points-popup static';
-        popup.textContent = `${points} 點!`;
+        popup.textContent = `${ points } 點!`;
 
         // Append to fixed container
         this.ui.rollResult.appendChild(popup);
@@ -374,15 +448,15 @@ class JustMakeGame {
     showFloatingText(amount, isNegative) {
         const float = document.createElement('div');
         float.className = isNegative ? 'float-up-text negative' : 'float-up-text';
-        float.textContent = isNegative ? `-$${Math.abs(amount)}` : `+$${amount}`;
+        float.textContent = isNegative ? `- $${ Math.abs(amount) } ` : ` + $${ amount } `;
 
         // Position relative to pot
         const rect = this.ui.potContainer.getBoundingClientRect();
         // We append to body to absolute position correctly on screen
         document.body.appendChild(float);
 
-        float.style.left = `${rect.left + rect.width / 2}px`;
-        float.style.top = `${rect.top}px`;
+        float.style.left = `${ rect.left + rect.width / 2 } px`;
+        float.style.top = `${ rect.top } px`;
 
         setTimeout(() => float.remove(), 1500);
     }
@@ -406,7 +480,7 @@ class JustMakeGame {
             this.showFloatingText(rollValue, true); // Pot loses money
 
             if (rollValue > 0) {
-                this.showOverlay('恭喜發財', `你擲出了 ${points} 點！\n從獎金池拿走 $${rollValue}。`, 'normal');
+                this.showOverlay('恭喜發財', `你擲出了 ${ points } 點！\n從獎金池拿走 $${ rollValue }。`, 'normal');
             } else {
                 // Zero points - auto skip after short delay
                 setTimeout(() => this.nextTurn(), 1000);
@@ -422,7 +496,7 @@ class JustMakeGame {
             type = 'bounce-back';
 
             this.showFloatingText(bounceBackAmount, false); // Pot gains money
-            this.showOverlay('倒扣機制', `爆了！\n擲出 ${points} 點 ($${rollValue}) > 獎金池餘額。\n你需要賠付 $${bounceBackAmount} 充公！`, 'bounce-back');
+            this.showOverlay('倒扣機制', `爆了！\n擲出 ${ points } 點($${ rollValue }) > 獎金池餘額。\n你需要賠付 $${ bounceBackAmount } 充公！`, 'bounce-back');
         }
 
         // this.logTurn(player, points, amountChange, type); // Removed logTurn
@@ -460,26 +534,26 @@ class JustMakeGame {
         rankingHTML += sortedPlayers.map((p, index) => {
             const rank = index + 1;
             const isWinner = index === 0;
-            const medal = isWinner ? '👑' : (rank === 2 ? '🥈' : (rank === 3 ? '🥉' : `#${rank}`));
+            const medal = isWinner ? '👑' : (rank === 2 ? '🥈' : (rank === 3 ? '🥉' : `#${ rank } `));
             const amountClass = p.moneyToken >= 0 ? 'positive' : 'negative';
 
             return `
-                <div class="rank-row ${isWinner ? 'winner' : ''}">
+    < div class="rank-row ${isWinner ? 'winner' : ''}" >
                     <div class="rank-medal">${medal}</div>
                     <div class="rank-avatar">${p.avatar}</div>
                     <div class="rank-name">${p.name}</div>
                     <div class="rank-amount ${amountClass}">$${p.moneyToken}</div>
-                </div>
-            `;
+                </div >
+    `;
         }).join('');
         rankingHTML += '</div>';
 
         const message = `
-            <div class="win-summary">
-                <p>恭喜 ${player.name} 清空獎金池！<br>通殺全場！每位玩家額外支付 $${amount}！</p>
-            </div>
-            ${rankingHTML}
-        `;
+    < div class="win-summary" >
+        <p>恭喜 ${player.name} 清空獎金池！<br>通殺全場！每位玩家額外支付 $${amount}！</p>
+            </div >
+    ${ rankingHTML }
+`;
 
         this.showOverlay('🏆 最終發財榜', message, 'win');
 
@@ -491,9 +565,9 @@ class JustMakeGame {
         const container = document.createElement('div');
         container.className = 'firecracker-container';
         container.innerHTML = `
-            <div class="firecracker">🧨</div>
-            <div class="firecracker">🧨</div>
-        `;
+    < div class="firecracker" >🧨</div >
+        <div class="firecracker">🧨</div>
+`;
         document.body.appendChild(container);
         // Remove after 5 seconds
         setTimeout(() => container.remove(), 5000);
@@ -511,14 +585,14 @@ class JustMakeGame {
             const amountClass = p.moneyToken >= 0 ? 'positive' : 'negative';
             const sign = p.moneyToken > 0 ? '+' : '';
             return `
-                <div class="log-entry" style="${p.id === this.players[this.currentPlayerIndex].id ? 'background: rgba(255,215,0,0.1);' : ''}">
+    < div class="log-entry" style = "${p.id === this.players[this.currentPlayerIndex].id ? 'background: rgba(255,215,0,0.1);' : ''}" >
                     <div class="log-player">
                         <span class="avatar">${p.avatar}</span>
                         <span class="name">${p.name}</span>
                     </div>
                     <div class="log-amount ${amountClass}">${sign}$${p.moneyToken}</div>
-                </div>
-            `;
+                </div >
+    `;
         }).join('');
     }
 
