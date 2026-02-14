@@ -553,8 +553,13 @@ class JustMakeGame {
             amountChange = rollValue;
             this.showFloatingText(rollValue, true); // Pot loses money
 
-            // Show snackbar for all results including 0 points
-            this.showOverlay('恭喜發財', `你擲出了 ${points} 點！從獎金池拿走 $${rollValue}。`, 'normal');
+            if (rollValue > 0) {
+                // Show snackbar for non-zero results
+                this.showOverlay('恭喜發財', `你擲出了 ${points} 點！從獎金池拿走 $${rollValue}。`, 'normal');
+            } else {
+                // 0 points - auto skip to next turn immediately
+                setTimeout(() => this.nextTurn(), 500);
+            }
         }
 
         // 3. Bounce Back (Recall)
@@ -704,6 +709,10 @@ class JustMakeGame {
         }
 
         sb.classList.remove('hidden');
+
+        // Set game status to IDLE immediately so player can click button or shake
+        this.gameStatus = 'IDLE';
+        this.ui.rollBtn.disabled = false;
 
         // Make snackbar clickable to skip to next turn
         const skipToNext = () => {
