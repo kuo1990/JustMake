@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Just Make - 新春發財大賽</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div class="app-background"></div>
+    <div class="app-container">
+        <!-- Setup Screen -->
+        <div id="setup-screen" class="screen active">
+            <div class="cny-decoration top-left"></div>
+            <div class="cny-decoration top-right"></div>
+
+            <h1 class="logo">
+                <span class="logo-sub">新春</span>
+                Just Make
+                <span class="logo-sub">發財大賽</span>
+            </h1>
+
+            <div class="setup-card">
+                <label for="player-count">參加人數</label>
+                <div class="input-group">
+                    <button class="btn-icon" id="decrease-players">−</button>
+                    <input type="number" id="player-count" value="4" min="2" max="10" readonly>
+                    <button class="btn-icon" id="increase-players">+</button>
+                </div>
+                <div class="pot-preview">
+                    <span>初始金池: $</span>
+                    <input type="number" id="initial-pot-input" value="840" class="pot-input">
+                </div>
+                <button id="start-game-btn" class="btn-primary">開局發財</button>
+            </div>
+
+            <p class="footer-msg">祝大家 恭喜發財 萬事如意</p>
+        </div>
+
+        <!-- Game Screen -->
+        <div id="game-screen" class="screen">
+            <div class="game-layout-wrapper">
+                <div class="game-main-area">
+                    <header class="game-header">
+                        <button id="restart-btn" class="btn-icon-small" title="重新遊戲">🔄</button>
+                        <div class="pot-container">
+                            <div class="pot-label">累積獎金</div>
+                            <div class="pot-wrapper">
+                                <div class="coin-icon">💰</div>
+                                <h2 id="current-pot">$0</h2>
+                            </div>
+                        </div>
+                    </header>
+
+                    <main class="game-board">
+                        <div class="bowl-container">
+                            <div class="dice-bowl" id="dice-container">
+                                <div class="placeholder-text">準備好手氣...</div>
+                            </div>
+                        </div>
+
+                        <div class="turn-info-card">
+                            <div class="current-player">
+                                <span class="label">現在輪到</span>
+                                <div id="player-avatar" class="avatar-icon"></div>
+                                <h3 id="player-name">玩家 1</h3>
+                            </div>
+                            <div class="roll-result" id="roll-result-display">
+                                <!-- Result messages appear here -->
+                            </div>
+                        </div>
+                    </main>
+
+                    <footer class="game-controls">
+                        <button id="roll-btn" class="btn-action">
+                            <span class="btn-text">試試手氣</span>
+                            <span class="btn-sub">發啦！</span>
+                        </button>
+                    </footer>
+                </div>
+
+                <!-- Game Log Sidebar -->
+                <div class="game-side-area">
+                    <div id="game-log-container" class="game-log">
+                        <div class="log-header">📜 發財紀錄</div>
+                        <div id="log-list" class="log-list">
+                            <!-- Log entries will be injected here -->
+                            <div class="log-entry placeholder">暫無紀錄...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Overlay for Events -->
+        <div id="overlay" class="overlay hidden">
+            <div class="overlay-content">
+                <div id="overlay-icon" class="overlay-icon">🧨</div>
+                <h2 id="overlay-title">標題</h2>
+                <p id="overlay-message">訊息內容</p>
+                <button id="overlay-btn" class="btn-secondary">繼續</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Audio Elements (Optional placeholder) -->
+    <!-- <audio id="roll-sound" src="roll.mp3"></audio> -->
+    <!-- <audio id="win-sound" src="win.mp3"></audio> -->
+
+    <canvas id="confetti-canvas"></canvas>
+
+    <script src="game.js"></script>
+</body>
+
+</html>
