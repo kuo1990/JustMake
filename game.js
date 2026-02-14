@@ -474,10 +474,11 @@ class JustMakeGame {
         const list = document.getElementById('leaderboard-list');
         if (!list) return;
 
-        // Sort players by money (descending)
-        const sortedPlayers = [...this.players].sort((a, b) => b.moneyToken - a.moneyToken);
+        // Sort players by money (descending) -> REMOVED per user request
+        // const sortedPlayers = [...this.players].sort((a, b) => b.moneyToken - a.moneyToken);
+        const displayPlayers = this.players; // Keep original order
 
-        list.innerHTML = sortedPlayers.map(p => {
+        list.innerHTML = displayPlayers.map(p => {
             const amountClass = p.moneyToken >= 0 ? 'positive' : 'negative';
             const sign = p.moneyToken > 0 ? '+' : '';
             return `
