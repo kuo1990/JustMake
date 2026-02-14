@@ -123,8 +123,7 @@ class JustMakeGame {
             overlayMessage: document.getElementById('overlay-message'),
             overlayBtn: document.getElementById('overlay-btn'),
             overlayIcon: document.getElementById('overlay-icon'),
-            overlayContent: document.querySelector('.overlay-content'),
-            diceCup: document.getElementById('dice-cup')
+            overlayContent: document.querySelector('.overlay-content')
         };
 
         this.shakeState = {
@@ -207,16 +206,13 @@ class JustMakeGame {
             if (!this.shakeState.isShaking) {
                 this.shakeState.isShaking = true;
                 this.audio.playShake();
-                // Show Cup and Shake
-                this.ui.diceCup.classList.remove('hidden', 'lift-up');
-                this.ui.diceCup.classList.add('shaking');
+                // Cup UI removed, just sound
             }
         } else {
             // Stop sound if shaking stops for 300ms
             if (this.shakeState.isShaking && (currentTime - this.shakeState.shakeStartTime > 300)) {
                 this.shakeState.isShaking = false;
                 this.audio.stopShake();
-                this.ui.diceCup.classList.remove('shaking');
             }
         }
 
@@ -224,8 +220,7 @@ class JustMakeGame {
         if (speed > throwThreshold) {
             this.audio.stopShake(); // Stop looping sound
             this.shakeState.isShaking = false;
-            this.ui.diceCup.classList.remove('shaking');
-            this.playTurn(true); // Cup Roll
+            this.playTurn(true); // Cup Roll (treated as Shake Roll)
         }
 
         this.shakeState.lastX = x;
@@ -242,8 +237,8 @@ class JustMakeGame {
 
         // Hybrid Roll Trigger
         this.ui.rollBtn.addEventListener('click', () => {
-            if (this.shakeState.isShaking || !this.ui.diceCup.classList.contains('hidden')) {
-                // If shaking or cup is visible, click means "Open Cup"
+            if (this.shakeState.isShaking) {
+                // If shaking, click means "Throw"
                 this.playTurn(true);
             } else {
                 // Otherwise normal fast roll
@@ -388,21 +383,11 @@ class JustMakeGame {
         this.ui.rollBtn.disabled = true;
         this.audio.stopShake(); // Ensure shake sound stops
 
-        if (isCupRoll) {
-            // Lift the Cup!
-            this.ui.diceCup.classList.remove('shaking', 'hidden');
-            this.ui.diceCup.classList.add('lift-up');
-        } else {
-            // Fast Roll - Ensure cup is hidden
-            this.ui.diceCup.classList.add('hidden');
-            this.ui.diceCup.classList.remove('shaking', 'lift-up');
-        }
-
         // 1. Shake Phase (0.8s) - Original container shake
         this.ui.diceContainer.classList.add('shaking');
         this.ui.diceContainer.innerHTML = '';
 
-        // Only play shake sound/vibrate if it's a Cup Roll
+        // Only play shake sound/vibrate if it's a Cup Roll (Shake)
         let shakeInterval;
         if (isCupRoll) {
             shakeInterval = setInterval(() => {
