@@ -1,100 +1,57 @@
-```javascript
-// Audio Controller using Web Audio API & Custom Assets
-        // User requested to remove procedural noise. 
+this.particles = [];
+this.resize();
+window.addEventListener('resize', () => this.resize());
+this.animating = false;
     }
 
-    playClack() {
-        if (!this.enabled) return;
-
-        // Reset and play custom sound
-        this.diceSound.currentTime = 0;
-        this.diceSound.play().catch(e => console.log("Audio play failed", e));
-    }
-
-    playWin() {
-        if (!this.enabled) return;
-
-        // Play custom winner music
-        this.winSound.currentTime = 0;
-        this.winSound.play().catch(e => console.log("Win audio play failed", e));
-
-        // Removed procedural beeps to let the music shine
-    }
-
-    playMoney() {
-        if (!this.enabled) return;
-        const osc = this.ctx.createOscillator();
-        const gain = this.ctx.createGain();
-        osc.frequency.value = 1200;
-        osc.type = 'sine';
-        gain.gain.setValueAtTime(0.1, this.ctx.currentTime);
-        gain.gain.linearRampToValueAtTime(0, this.ctx.currentTime + 0.1);
-        osc.connect(gain);
-        gain.connect(this.ctx.destination);
-        osc.start();
-        osc.stop(this.ctx.currentTime + 0.1);
-    }
+resize() {
+    this.canvas.width = window.innerWidth;
+    this.canvas.height = window.innerHeight;
 }
 
-// Confetti System
-class ConfettiSystem {
-    constructor(canvasId) {
-        this.canvas = document.getElementById(canvasId);
-        this.ctx = this.canvas.getContext('2d');
-        this.particles = [];
-        this.resize();
-        window.addEventListener('resize', () => this.resize());
+burst() {
+    for (let i = 0; i < 100; i++) {
+        this.particles.push({
+            x: window.innerWidth / 2,
+            y: window.innerHeight / 2,
+            vx: (Math.random() - 0.5) * 20,
+            vy: (Math.random() - 1) * 20,
+            color: ['#FFD700', '#D32F2F', '#FFF'][Math.floor(Math.random() * 3)],
+            size: Math.random() * 10 + 5,
+            rotation: Math.random() * 360,
+            vRot: (Math.random() - 0.5) * 10
+        });
+    }
+    if (!this.animating) this.animate();
+}
+
+animate() {
+    this.animating = true;
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+    for (let i = this.particles.length - 1; i >= 0; i--) {
+        const p = this.particles[i];
+        p.x += p.vx;
+        p.y += p.vy;
+        p.vy += 0.5; // Gravity
+        p.rotation += p.vRot;
+
+        this.ctx.save();
+        this.ctx.translate(p.x, p.y);
+        this.ctx.rotate(p.rotation * Math.PI / 180);
+        this.ctx.fillStyle = p.color;
+        this.ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
+        this.ctx.restore();
+
+        if (p.y > this.canvas.height) this.particles.splice(i, 1);
+    }
+
+    if (this.particles.length > 0) {
+        requestAnimationFrame(() => this.animate());
+    } else {
         this.animating = false;
     }
-
-    resize() {
-        this.canvas.width = window.innerWidth;
-        this.canvas.height = window.innerHeight;
-    }
-
-    burst() {
-        for (let i = 0; i < 100; i++) {
-            this.particles.push({
-                x: window.innerWidth / 2,
-                y: window.innerHeight / 2,
-                vx: (Math.random() - 0.5) * 20,
-                vy: (Math.random() - 1) * 20,
-                color: ['#FFD700', '#D32F2F', '#FFF'][Math.floor(Math.random() * 3)],
-                size: Math.random() * 10 + 5,
-                rotation: Math.random() * 360,
-                vRot: (Math.random() - 0.5) * 10
-            });
-        }
-        if (!this.animating) this.animate();
-    }
-
-    animate() {
-        this.animating = true;
-        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-
-        for (let i = this.particles.length - 1; i >= 0; i--) {
-            const p = this.particles[i];
-            p.x += p.vx;
-            p.y += p.vy;
-            p.vy += 0.5; // Gravity
-            p.rotation += p.vRot;
-
-            this.ctx.save();
-            this.ctx.translate(p.x, p.y);
-            this.ctx.rotate(p.rotation * Math.PI / 180);
-            this.ctx.fillStyle = p.color;
-            this.ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
-            this.ctx.restore();
-
-            if (p.y > this.canvas.height) this.particles.splice(i, 1);
-        }
-
-        if (this.particles.length > 0) {
-            requestAnimationFrame(() => this.animate());
-        } else {
-            this.animating = false;
-        }
-    }
+}
 }
 
 class JustMakeGame {
@@ -109,7 +66,32 @@ class JustMakeGame {
         ];
 
         // Systems
-        this.audio = new AudioController();
+        this.audio = {
+            ctx: new (window.AudioContext || window.webkitAudioContext)(),
+            shake: new Audio('dice_rolling.mp3'),
+            roll: new Audio('https://assets.mixkit.co/active_storage/sfx/2003/2003-preview.mp3'),
+            win: new Audio('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3'),
+            playShake: () => {
+                const s = this.audio.shake;
+                s.loop = true;
+                s.currentTime = 0;
+                s.play().catch(() => { });
+            },
+            stopShake: () => {
+                this.audio.shake.pause();
+                this.audio.shake.currentTime = 0;
+            },
+            playClack: () => {
+                const s = this.audio.roll;
+                s.currentTime = 0;
+                s.play().catch(() => { });
+            },
+            playWin: () => {
+                const s = this.audio.win;
+                s.currentTime = 0;
+                s.play().catch(() => { });
+            }
+        };
         this.confetti = new ConfettiSystem('confetti-canvas');
 
         // State
@@ -140,39 +122,15 @@ class JustMakeGame {
             diceCup: document.getElementById('dice-cup')
         };
 
+        this.shakeState = {
+            lastX: null, lastY: null, lastZ: null,
+            lastTime: 0,
+            shakeStartTime: 0,
+            isShaking: false
+        };
+
         this.initEventListeners();
-        this.updateSetupPreview();
-// ... (rest of simple init)
-
-// IN handleMotion:
-        // Continuous Shake Sound & Visual Logic
-        if (speed > shakeThreshold) {
-            this.shakeState.shakeStartTime = currentTime;
-            if (!this.shakeState.isShaking) {
-                this.shakeState.isShaking = true;
-                this.audio.playShake();
-                
-                // Show Cup and Shake
-                this.ui.diceCup.classList.remove('hidden', 'lift-up');
-                this.ui.diceCup.classList.add('shaking');
-            }
-        } else {
-            // Stop sound if shaking stops for 300ms
-            if (this.shakeState.isShaking && (currentTime - this.shakeState.shakeStartTime > 300)) {
-                this.shakeState.isShaking = false;
-                this.audio.stopShake();
-                this.ui.diceCup.classList.remove('shaking');
-            }
-        }
-
-        // Trigger Throw
-        if (speed > throwThreshold) {
-            this.audio.stopShake(); 
-            this.shakeState.isShaking = false;
-            this.ui.diceCup.classList.remove('shaking');
-            this.playTurn();
-        }
-// ...
+        this.setupShakeDetection();
         this.updateSetupPreview();
 
         // Unlock audio context on user interaction
@@ -183,7 +141,7 @@ class JustMakeGame {
 
     setupShakeDetection() {
         const btn = document.getElementById('shake-perm-btn');
-        
+
         // Check if DeviceMotionEvent is defined
         if (typeof DeviceMotionEvent !== 'undefined') {
             // iOS 13+ requires permission
@@ -231,7 +189,7 @@ class JustMakeGame {
         const deltaX = Math.abs(x - lastX);
         const deltaY = Math.abs(y - lastY);
         const deltaZ = Math.abs(z - lastZ);
-        
+
         // Sensitivity thresholds
         const shakeThreshold = 5; // Start "shaking" sound
         const throwThreshold = 25; // Trigger "throw"
@@ -311,7 +269,7 @@ class JustMakeGame {
 
         this.players = Array.from({ length: playerCount }, (_, i) => ({
             id: i + 1,
-            name: `玩家 ${ i + 1 } `,
+            name: `玩家 ${i + 1} `,
             avatar: shuffledAvatars[i % shuffledAvatars.length], // Use modulo just in case but we have enough
             moneyToken: 0
         }));
@@ -342,7 +300,7 @@ class JustMakeGame {
     }
 
     updateGameUI() {
-        this.ui.currentPotDisplay.textContent = `$${ this.potBalance } `;
+        this.ui.currentPotDisplay.textContent = `$${this.potBalance} `;
         const player = this.players[this.currentPlayerIndex];
         this.ui.playerName.textContent = player.name;
         this.ui.playerAvatar.textContent = player.avatar;
@@ -397,9 +355,9 @@ class JustMakeGame {
         }
 
         const rotate = Math.random() * 360;
-        die.style.top = `${ top } px`;
-        die.style.left = `${ left } px`;
-        die.style.transform = `rotate(${ rotate }deg)`;
+        die.style.top = `${top} px`;
+        die.style.left = `${left} px`;
+        die.style.transform = `rotate(${rotate}deg)`;
 
         // Save pos for next check
         existingDice.push({ top, left });
@@ -412,7 +370,7 @@ class JustMakeGame {
         this.gameStatus = 'ROLLING';
         this.ui.rollBtn.disabled = true;
         this.audio.stopShake(); // Ensure shake sound stops
-        
+
         // Lift the Cup!
         this.ui.diceCup.classList.remove('shaking', 'hidden');
         this.ui.diceCup.classList.add('lift-up');
@@ -475,7 +433,7 @@ class JustMakeGame {
 
         const popup = document.createElement('div');
         popup.className = 'points-popup static';
-        popup.textContent = `${ points } 點!`;
+        popup.textContent = `${points} 點!`;
 
         // Append to fixed container
         this.ui.rollResult.appendChild(popup);
@@ -490,15 +448,15 @@ class JustMakeGame {
     showFloatingText(amount, isNegative) {
         const float = document.createElement('div');
         float.className = isNegative ? 'float-up-text negative' : 'float-up-text';
-        float.textContent = isNegative ? `- $${ Math.abs(amount) } ` : ` + $${ amount } `;
+        float.textContent = isNegative ? `- $${Math.abs(amount)} ` : ` + $${amount} `;
 
         // Position relative to pot
         const rect = this.ui.potContainer.getBoundingClientRect();
         // We append to body to absolute position correctly on screen
         document.body.appendChild(float);
 
-        float.style.left = `${ rect.left + rect.width / 2 } px`;
-        float.style.top = `${ rect.top } px`;
+        float.style.left = `${rect.left + rect.width / 2} px`;
+        float.style.top = `${rect.top} px`;
 
         setTimeout(() => float.remove(), 1500);
     }
@@ -522,7 +480,7 @@ class JustMakeGame {
             this.showFloatingText(rollValue, true); // Pot loses money
 
             if (rollValue > 0) {
-                this.showOverlay('恭喜發財', `你擲出了 ${ points } 點！\n從獎金池拿走 $${ rollValue }。`, 'normal');
+                this.showOverlay('恭喜發財', `你擲出了 ${points} 點！\n從獎金池拿走 $${rollValue}。`, 'normal');
             } else {
                 // Zero points - auto skip after short delay
                 setTimeout(() => this.nextTurn(), 1000);
@@ -538,7 +496,7 @@ class JustMakeGame {
             type = 'bounce-back';
 
             this.showFloatingText(bounceBackAmount, false); // Pot gains money
-            this.showOverlay('倒扣機制', `爆了！\n擲出 ${ points } 點($${ rollValue }) > 獎金池餘額。\n你需要賠付 $${ bounceBackAmount } 充公！`, 'bounce-back');
+            this.showOverlay('倒扣機制', `爆了！\n擲出 ${points} 點($${rollValue}) > 獎金池餘額。\n你需要賠付 $${bounceBackAmount} 充公！`, 'bounce-back');
         }
 
         // this.logTurn(player, points, amountChange, type); // Removed logTurn
@@ -576,7 +534,7 @@ class JustMakeGame {
         rankingHTML += sortedPlayers.map((p, index) => {
             const rank = index + 1;
             const isWinner = index === 0;
-            const medal = isWinner ? '👑' : (rank === 2 ? '🥈' : (rank === 3 ? '🥉' : `#${ rank } `));
+            const medal = isWinner ? '👑' : (rank === 2 ? '🥈' : (rank === 3 ? '🥉' : `#${rank} `));
             const amountClass = p.moneyToken >= 0 ? 'positive' : 'negative';
 
             return `
@@ -594,7 +552,7 @@ class JustMakeGame {
     < div class="win-summary" >
         <p>恭喜 ${player.name} 清空獎金池！<br>通殺全場！每位玩家額外支付 $${amount}！</p>
             </div >
-    ${ rankingHTML }
+    ${rankingHTML}
 `;
 
         this.showOverlay('🏆 最終發財榜', message, 'win');
