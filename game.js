@@ -114,7 +114,11 @@ class JustMakeGame {
         // Configuration
         this.basePotPerPlayer = 100;
         this.cashPerPoint = 10;
-        this.avatars = ['🐲', '🦁', '🧧', '💰', '🍊', '🍍', '🧨', '🏮'];
+        this.avatars = [
+            '🐲', '🦁', '🧧', '💰', '🍊', '🍍', '🧨', '🏮',
+            '🐯', '🐰', '🐍', '🐎', '🐐', '🐒', '🐔', '🐶', '🐷',
+            '💎', '🀄', '🎲', '🎋', '🥟', '🍵', '🌑'
+        ];
 
         // Systems
         this.audio = new AudioController();
@@ -191,10 +195,13 @@ class JustMakeGame {
         const playerCount = parseInt(this.ui.playerCountInput.value);
         const inputPot = parseInt(document.getElementById('initial-pot-input').value); // Read Input
 
+        // Shuffle avatars
+        const shuffledAvatars = [...this.avatars].sort(() => 0.5 - Math.random());
+
         this.players = Array.from({ length: playerCount }, (_, i) => ({
             id: i + 1,
             name: `玩家 ${i + 1}`,
-            avatar: this.avatars[Math.floor(Math.random() * this.avatars.length)],
+            avatar: shuffledAvatars[i % shuffledAvatars.length], // Use modulo just in case but we have enough
             moneyToken: 0
         }));
 
