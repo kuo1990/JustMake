@@ -336,17 +336,22 @@ class JustMakeGame {
         this.showPointsPopup(points);
         if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
 
-        // Wait another 1s before showing money result
-        await new Promise(r => setTimeout(r, 1000));
+        // Wait another 2s before showing money result
+        await new Promise(r => setTimeout(r, 2000));
 
         this.resolveTurn(rolls, points);
     }
 
     showPointsPopup(points) {
+        // Clear previous
+        this.ui.rollResult.innerHTML = '';
+
         const popup = document.createElement('div');
-        popup.className = 'points-popup';
+        popup.className = 'points-popup static';
         popup.textContent = `${points} 點!`;
-        this.ui.diceContainer.parentNode.appendChild(popup); // Append to bowl wrapper
+
+        // Append to fixed container
+        this.ui.rollResult.appendChild(popup);
         this.audio.playMoney();
     }
 

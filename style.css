@@ -825,23 +825,18 @@ h1.logo {
 }
 
 /* Points Popup */
+/* Points Popup */
 .points-popup {
-    position: absolute;
-    top: -60px;
-    /* Above bowl */
-    left: 50%;
-    transform: translateX(-50%);
+    /* Static Positioning */
     background: var(--text-red);
     color: #FFF;
-    padding: 0.5rem 1.5rem;
+    padding: 0.2rem 1rem;
     border-radius: 50px;
     font-size: 1.5rem;
     font-weight: bold;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
     border: 2px solid var(--primary-gold);
-    animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    z-index: 20;
-    white-space: nowrap;
+    display: inline-block;
 }
 
 /* Avatar Icons */
