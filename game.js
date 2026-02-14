@@ -224,19 +224,21 @@ class JustMakeGame {
             if (!this.shakeState.isShaking) {
                 this.shakeState.isShaking = true;
                 this.audio.playShake();
-                // Cup UI removed, just sound
+                this.ui.diceContainer.classList.add('shaking'); // Visual Feedback
             }
         } else {
             // Stop sound if shaking stops for 300ms
             if (this.shakeState.isShaking && (currentTime - this.shakeState.shakeStartTime > 300)) {
                 this.shakeState.isShaking = false;
                 this.audio.stopShake();
+                this.ui.diceContainer.classList.remove('shaking'); // Stop Visual
             }
         }
 
         // Trigger Throw
         if (speed > throwThreshold) {
             this.audio.stopShake(); // Stop looping sound
+            this.ui.diceContainer.classList.remove('shaking'); // Stop visual
             this.shakeState.isShaking = false;
             this.playTurn(true); // Cup Roll (treated as Shake Roll)
         }
@@ -252,6 +254,10 @@ class JustMakeGame {
         this.currentPlayerIndex = (this.currentPlayerIndex + 1) % this.players.length;
         this.gameStatus = 'IDLE';
         this.ui.rollBtn.disabled = false;
+
+        // Clear dice for the next player (User Request)
+        const nextPlayerName = this.players[this.currentPlayerIndex].name;
+        this.ui.diceContainer.innerHTML = `<div class="placeholder-text">換 ${nextPlayerName} 試試手氣!</div>`;
 
         // Add cooldown to prevent accidental shakes immediately getting detected
         this.shakeCooldown = true;
@@ -414,13 +420,9 @@ class JustMakeGame {
         this.ui.rollBtn.disabled = true;
         this.audio.stopShake(); // Ensure shake sound stops
 
-        // 1. Shake Phase (0.8s) - Show Red Cup
+        // 1. Shake Phase (0.8s) - Shake the Bowl/Mat
         this.ui.diceContainer.innerHTML = '';
-        this.ui.diceCupOverlay.classList.remove('hidden', 'lift-up');
-        this.ui.diceCupOverlay.classList.add('visible', 'shaking');
-
-        // Allow container to shake too? maybe not needed if cup shakes
-        // this.ui.diceContainer.classList.add('shaking'); 
+        this.ui.diceContainer.classList.add('shaking');
 
         let shakeInterval;
         if (isCupRoll) {
@@ -437,11 +439,9 @@ class JustMakeGame {
             this.audio.stopShake();
         }
 
-        this.ui.diceCupOverlay.classList.remove('shaking');
-        // Lift Cup to Reveal
-        this.ui.diceCupOverlay.classList.add('lift-up');
+        this.ui.diceContainer.classList.remove('shaking');
+        // No lift animation needed anymore
 
-        // Wait for lift animation (0.3s) before showing dice fully?
         await new Promise(r => setTimeout(r, 200));
 
         // 2. Land Phase
