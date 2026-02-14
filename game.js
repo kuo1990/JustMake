@@ -112,7 +112,7 @@ class ConfettiSystem {
 class JustMakeGame {
     constructor() {
         // Configuration
-        this.basePotPerPlayer = 100;
+        this.basePotPerPlayer = 210; // (1+2+3+4+5+6)*10 = 210
         this.cashPerPoint = 10;
         this.avatars = [
             '🐲', '🦁', '🧧', '💰', '🍊', '🍍', '🧨', '🏮',
@@ -321,9 +321,16 @@ class JustMakeGame {
         const rolls = [];
         const dicePositions = []; // Store {top, left} for collision check
 
-        for (let i = 0; i < diceCount; i++) {
-            rolls.push(Math.floor(Math.random() * 6) + 1);
-            const die = this.createDieHTMLElement(rolls[i], dicePositions);
+        // Specialized Dice Logic:
+        // Die 1: 1/6 chance to be 1, otherwise 0 (Blank)
+        // Die 2: 1/6 chance to be 2, otherwise 0 (Blank)
+        // ...
+        for (let i = 1; i <= diceCount; i++) {
+            // 1/6 chance to hit the number 'i', else 0
+            const val = Math.random() < (1 / 6) ? i : 0;
+            rolls.push(val);
+
+            const die = this.createDieHTMLElement(val, dicePositions);
             die.style.animation = 'popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
             this.ui.diceContainer.appendChild(die);
         }
