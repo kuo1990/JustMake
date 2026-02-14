@@ -540,7 +540,7 @@ class JustMakeGame {
             this.showFloatingText(rollValue, true); // Pot loses money
 
             if (rollValue > 0) {
-                this.showOverlay('恭喜發財', `你擲出了 ${points} 點！\n從獎金池拿走 $${rollValue}。`, 'normal');
+                this.showOverlay('恭喜發財', `你擲出了 ${points} 點！從獎金池拿走 $${rollValue}。`, 'normal');
             } else {
                 // Zero points - auto skip after short delay
                 setTimeout(() => this.nextTurn(), 1000);
@@ -556,7 +556,7 @@ class JustMakeGame {
             type = 'bounce-back';
 
             this.showFloatingText(bounceBackAmount, false); // Pot gains money
-            this.showOverlay('倒扣機制', `爆了！\n擲出 ${points} 點($${rollValue}) > 獎金池餘額。\n你需要賠付 $${bounceBackAmount} 充公！`, 'bounce-back');
+            this.showOverlay('倒扣機制', `爆了！擲出 ${points} 點($${rollValue}) > 獎金池餘額。你需要賠付 $${bounceBackAmount} 充公！`, 'bounce-back');
         }
 
         // this.logTurn(player, points, amountChange, type); // Removed logTurn
