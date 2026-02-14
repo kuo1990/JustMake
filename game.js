@@ -208,9 +208,8 @@ class JustMakeGame {
         this.potBalance = isNaN(inputPot) ? playerCount * this.basePotPerPlayer : inputPot;
         this.currentPlayerIndex = 0;
 
-        // Clear previous game logs
-        const logList = document.getElementById('log-list');
-        logList.innerHTML = '<div class="log-entry placeholder">暫無紀錄...</div>';
+        // Initial Leaderboard
+        this.updateLeaderboard();
 
         this.ui.setupScreen.classList.remove('active');
         this.ui.gameScreen.classList.add('active');
@@ -403,7 +402,13 @@ class JustMakeGame {
             player.moneyToken += rollValue;
             amountChange = rollValue;
             this.showFloatingText(rollValue, true); // Pot loses money
-            this.showOverlay('恭喜發財', `你擲出了 ${points} 點！\n從獎金池拿走 $${rollValue}。`, 'normal');
+
+            if (rollValue > 0) {
+                this.showOverlay('恭喜發財', `你擲出了 ${points} 點！\n從獎金池拿走 $${rollValue}。`, 'normal');
+            } else {
+                // Zero points - auto skip after short delay
+                setTimeout(() => this.nextTurn(), 1000);
+            }
         }
 
         // 3. Bounce Back (Recall)
@@ -418,22 +423,36 @@ class JustMakeGame {
             this.showOverlay('倒扣機制', `爆了！\n擲出 ${points} 點 ($${rollValue}) > 獎金池餘額。\n你需要賠付 $${bounceBackAmount} 充公！`, 'bounce-back');
         }
 
-        this.logTurn(player, points, amountChange, type);
+        // this.logTurn(player, points, amountChange, type); // Removed logTurn
+        this.updateLeaderboard(); // Update Leaderboard instead
         this.updateGameUI();
     }
 
     handleVictory(player, amount) {
         this.gameStatus = 'WIN';
+
+        // 1. Winner takes the pot
+        player.moneyToken += this.potBalance;
         this.potBalance = 0;
 
-        this.logTurn(player, amount / this.cashPerPoint, amount, 'win');
+        // 2. "Just Make" Bonus: Each other player pays 'amount' to the winner
+        // amount is the pot size before it was cleared (passed as argument)
+        this.players.forEach(p => {
+            if (p.id !== player.id) {
+                p.moneyToken -= amount;
+                player.moneyToken += amount;
+            }
+        });
+
+        // this.logTurn(player, amount / this.cashPerPoint, amount, 'win'); // Removed logTurn
+        this.updateLeaderboard(); // Update Leaderboard
 
         this.updateGameUI();
         this.confetti.burst();
-        this.showFirecrackers(); // New Effect
+        this.showFirecrackers();
         this.audio.playWin();
 
-        this.showOverlay('財神到！', `恭喜 ${player.name}！\n清空獎金池 ($${amount})！\n\n通殺！每位玩家需額外支付 $40 給你！`, 'win');
+        this.showOverlay('財神到！', `恭喜 ${player.name}！\n清空獎金池 ($${amount})！\n\n通殺！每位玩家需額外支付 $${amount} 給你！`, 'win');
 
         this.ui.overlayBtn.textContent = "再來一局";
         this.ui.overlayBtn.onclick = () => location.reload();
@@ -447,44 +466,30 @@ class JustMakeGame {
             <div class="firecracker">🧨</div>
         `;
         document.body.appendChild(container);
-
         // Remove after 5 seconds
         setTimeout(() => container.remove(), 5000);
     }
 
-    logTurn(player, points, amount, type) {
-        const logList = document.getElementById('log-list');
-        const placeholder = logList.querySelector('.placeholder');
-        if (placeholder) placeholder.remove();
+    updateLeaderboard() {
+        const list = document.getElementById('leaderboard-list');
+        if (!list) return;
 
-        const entry = document.createElement('div');
-        entry.className = 'log-entry';
+        // Sort players by money (descending)
+        const sortedPlayers = [...this.players].sort((a, b) => b.moneyToken - a.moneyToken);
 
-        let amountClass = 'positive';
-        let amountText = `+$${amount}`;
-
-        if (amount < 0) {
-            amountClass = 'negative';
-            amountText = `-$${Math.abs(amount)}`;
-        } else if (type === 'win') {
-            amountClass = 'win';
-            amountText = `🏆 +$${amount}`;
-        }
-
-        const diceInfo = `${points}點`; // Can expand to show individual dice if tracked, but points is enough for summary
-
-        entry.innerHTML = `
-            <div class="log-player">
-                <span>${player.avatar}</span>
-                <span>${player.name}</span>
-            </div>
-            <div class="log-result">${diceInfo}</div>
-            <div class="log-amount ${amountClass}">${amountText}</div>
-        `;
-
-        // Prepend to show newest first? Or Append?
-        // Usually logs scroll down. Let's prepend to show newest at top triggers standard feed feel.
-        logList.insertBefore(entry, logList.firstChild);
+        list.innerHTML = sortedPlayers.map(p => {
+            const amountClass = p.moneyToken >= 0 ? 'positive' : 'negative';
+            const sign = p.moneyToken > 0 ? '+' : '';
+            return `
+                <div class="log-entry" style="${p.id === this.players[this.currentPlayerIndex].id ? 'background: rgba(255,215,0,0.1);' : ''}">
+                    <div class="log-player">
+                        <span class="avatar">${p.avatar}</span>
+                        <span class="name">${p.name}</span>
+                    </div>
+                    <div class="log-amount ${amountClass}">${sign}$${p.moneyToken}</div>
+                </div>
+            `;
+        }).join('');
     }
 
     showOverlay(title, message, type) {
