@@ -5,15 +5,14 @@ class AudioController {
         this.enabled = true;
         this.diceSound = new Audio('dice-142528.mp3');
         this.diceSound.volume = 1.0;
+
+        this.winSound = new Audio('./assets/winner.mov');
+        this.winSound.volume = 1.0;
     }
 
     playShake() {
         if (!this.enabled) return;
         // User requested to remove procedural noise. 
-        // We only use the provided MP3 in playClack().
-        // Shake is now silent visual-only, or we could play the mp3? 
-        // "Only play what I provided". The mp3 is likely short. 
-        // We leave shake silent as per "remove your custom sound".
     }
 
     playClack() {
@@ -26,19 +25,12 @@ class AudioController {
 
     playWin() {
         if (!this.enabled) return;
-        const now = this.ctx.currentTime;
-        [440, 554, 659, 880].forEach((freq, i) => { // A Major Arpeggio
-            const osc = this.ctx.createOscillator();
-            const gain = this.ctx.createGain();
-            osc.frequency.value = freq;
-            osc.type = 'triangle';
-            gain.gain.setValueAtTime(0.1, now + i * 0.1);
-            gain.gain.linearRampToValueAtTime(0, now + i * 0.1 + 0.3);
-            osc.connect(gain);
-            gain.connect(this.ctx.destination);
-            osc.start(now + i * 0.1);
-            osc.stop(now + i * 0.1 + 0.3);
-        });
+
+        // Play custom winner music
+        this.winSound.currentTime = 0;
+        this.winSound.play().catch(e => console.log("Win audio play failed", e));
+
+        // Removed procedural beeps to let the music shine
     }
 
     playMoney() {
