@@ -493,29 +493,53 @@ class JustMakeGame {
     }
 
     showOverlay(title, message, type) {
-        this.ui.overlayTitle.textContent = title;
-        this.ui.overlayMessage.innerText = message;
+        if (type === 'win') {
+            // Full Overlay for Jackpot
+            this.ui.overlayTitle.textContent = title;
+            this.ui.overlayMessage.innerText = message;
+            this.ui.overlayContent.className = 'overlay-content win-mode';
+            this.ui.overlayIcon.textContent = '🧧';
+            this.ui.overlay.classList.remove('hidden');
+        } else {
+            // Snackbar for regular updates
+            this.showSnackbar(title, message, type);
+        }
+    }
 
-        this.ui.overlayContent.className = 'overlay-content';
+    showSnackbar(title, message, type) {
+        const sb = document.getElementById('snackbar');
+        const icon = sb.querySelector('.snackbar-icon');
+        const titleEl = sb.querySelector('.snackbar-title');
+        const msgEl = sb.querySelector('.snackbar-message');
+
+        titleEl.textContent = title;
+        msgEl.textContent = message;
+        sb.className = 'snackbar'; // Reset class
 
         if (type === 'normal') {
-            this.ui.overlayIcon.textContent = '💰';
+            sb.classList.add('normal');
+            icon.textContent = '💰';
         } else if (type === 'bounce-back') {
-            this.ui.overlayContent.classList.add('bounce-back-mode');
-            this.ui.overlayIcon.textContent = '💸';
-        } else if (type === 'win') {
-            this.ui.overlayContent.classList.add('win-mode');
-            this.ui.overlayIcon.textContent = '🧧';
+            sb.classList.add('bounce-back');
+            icon.textContent = '💸';
         }
 
-        this.ui.overlay.classList.remove('hidden');
+        sb.classList.remove('hidden');
+
+        // Auto hide after 2.5s and next turn
+        setTimeout(() => {
+            sb.classList.add('hidden');
+            if (this.gameStatus !== 'WIN') {
+                this.nextTurn();
+            }
+        }, 2500);
     }
 
     hideOverlay() {
         this.ui.overlay.classList.add('hidden');
-        if (this.gameStatus !== 'WIN') {
-            this.nextTurn();
-        }
+        // Only next turn if we closed a win overlay manually? 
+        // Actually win overlay usually reloads game. 
+        // If we use overlay for generic messages later, we might need this.
     }
 
     nextTurn() {
