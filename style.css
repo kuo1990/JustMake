@@ -397,7 +397,8 @@ h1.logo {
 }
 
 .dice-bowl {
-    width: 320px;
+    width: 90%;
+    max-width: 320px;
     height: 240px;
     border-radius: 16px;
     background: transparent;
