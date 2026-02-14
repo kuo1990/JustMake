@@ -252,18 +252,17 @@ class JustMakeGame {
         let overlap = true;
         let retries = 0;
         const maxRetries = 100;
-        const dieSize = 55; // 50px + margin
-        const center = 140;
-        const maxR = 90; // Keep inside bowl
+        const containerW = 320;
+        const containerH = 240;
+        const padding = 20;
+        const dieSize = 50;
 
         while (overlap && retries < maxRetries) {
             retries++;
-            const angle = Math.random() * Math.PI * 2;
-            // Sqrt for uniform distribution
-            const r = maxR * Math.sqrt(Math.random());
 
-            top = center + r * Math.sin(angle) - 25;
-            left = center + r * Math.cos(angle) - 25;
+            // Rectangular Distribution
+            left = padding + Math.random() * (containerW - dieSize - padding * 2);
+            top = padding + Math.random() * (containerH - dieSize - padding * 2);
 
             // Check against existing
             overlap = false;
@@ -271,7 +270,7 @@ class JustMakeGame {
                 const dx = left - other.left;
                 const dy = top - other.top;
                 const dist = Math.sqrt(dx * dx + dy * dy);
-                if (dist < dieSize) {
+                if (dist < dieSize * 0.9) { // 0.9 allows slight squeeze
                     overlap = true;
                     break;
                 }
