@@ -393,7 +393,7 @@ class JustMakeGame {
             player.moneyToken += rollValue;
             amountChange = rollValue;
             this.showFloatingText(rollValue, true); // Pot loses money
-            this.showOverlay('恭喜發財', `你擲出了 ${points} 點 ($${rollValue})！\n從獎金池拿走 $${rollValue}。`, 'normal');
+            this.showOverlay('恭喜發財', `你擲出了 ${points} 點！\n從獎金池拿走 $${rollValue}。`, 'normal');
         }
 
         // 3. Bounce Back (Recall)
