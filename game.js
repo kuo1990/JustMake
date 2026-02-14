@@ -244,6 +244,8 @@ class JustMakeGame {
         if (this.gameStatus !== 'SETUP' && placeholder) {
             placeholder.remove();
         }
+
+        this.updateLeaderboard(); // Sync Leaderboard Highlight
     }
 
     createDieHTMLElement(value, existingDice) {
