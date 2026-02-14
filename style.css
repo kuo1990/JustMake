@@ -389,7 +389,8 @@ h1.logo {
     gap: 1rem;
     width: 100%;
     position: relative;
-    z-index: 5;
+    z-index: 12;
+    /* Above header (10) so cup overlay shows */
 }
 
 /* Bowl Design */

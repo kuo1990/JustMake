@@ -451,13 +451,9 @@ class JustMakeGame {
         const rolls = [];
         const dicePositions = []; // Store {top, left} for collision check
 
-        // Specialized Dice Logic:
-        // Die 1: 1/6 chance to be 1, otherwise 0 (Blank)
-        // Die 2: 1/6 chance to be 2, otherwise 0 (Blank)
-        // ...
-        for (let i = 1; i <= diceCount; i++) {
-            // 1/6 chance to hit the number 'i', else 0
-            const val = Math.random() < (1 / 6) ? i : 0;
+        for (let i = 0; i < diceCount; i++) {
+            // Standard 1-6 dice
+            const val = Math.floor(Math.random() * 6) + 1;
             rolls.push(val);
 
             const die = this.createDieHTMLElement(val, dicePositions);
