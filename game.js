@@ -1,57 +1,62 @@
-this.particles = [];
-this.resize();
-window.addEventListener('resize', () => this.resize());
-this.animating = false;
-    }
-
-resize() {
-    this.canvas.width = window.innerWidth;
-    this.canvas.height = window.innerHeight;
-}
-
-burst() {
-    for (let i = 0; i < 100; i++) {
-        this.particles.push({
-            x: window.innerWidth / 2,
-            y: window.innerHeight / 2,
-            vx: (Math.random() - 0.5) * 20,
-            vy: (Math.random() - 1) * 20,
-            color: ['#FFD700', '#D32F2F', '#FFF'][Math.floor(Math.random() * 3)],
-            size: Math.random() * 10 + 5,
-            rotation: Math.random() * 360,
-            vRot: (Math.random() - 0.5) * 10
-        });
-    }
-    if (!this.animating) this.animate();
-}
-
-animate() {
-    this.animating = true;
-    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-
-    for (let i = this.particles.length - 1; i >= 0; i--) {
-        const p = this.particles[i];
-        p.x += p.vx;
-        p.y += p.vy;
-        p.vy += 0.5; // Gravity
-        p.rotation += p.vRot;
-
-        this.ctx.save();
-        this.ctx.translate(p.x, p.y);
-        this.ctx.rotate(p.rotation * Math.PI / 180);
-        this.ctx.fillStyle = p.color;
-        this.ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
-        this.ctx.restore();
-
-        if (p.y > this.canvas.height) this.particles.splice(i, 1);
-    }
-
-    if (this.particles.length > 0) {
-        requestAnimationFrame(() => this.animate());
-    } else {
+// Confetti System
+class ConfettiSystem {
+    constructor(canvasId) {
+        this.canvas = document.getElementById(canvasId);
+        this.ctx = this.canvas.getContext('2d');
+        this.particles = [];
+        this.resize();
+        window.addEventListener('resize', () => this.resize());
         this.animating = false;
     }
-}
+
+    resize() {
+        this.canvas.width = window.innerWidth;
+        this.canvas.height = window.innerHeight;
+    }
+
+    burst() {
+        for (let i = 0; i < 100; i++) {
+            this.particles.push({
+                x: window.innerWidth / 2,
+                y: window.innerHeight / 2,
+                vx: (Math.random() - 0.5) * 20,
+                vy: (Math.random() - 1) * 20,
+                color: ['#FFD700', '#D32F2F', '#FFF'][Math.floor(Math.random() * 3)],
+                size: Math.random() * 10 + 5,
+                rotation: Math.random() * 360,
+                vRot: (Math.random() - 0.5) * 10
+            });
+        }
+        if (!this.animating) this.animate();
+    }
+
+    animate() {
+        this.animating = true;
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+        for (let i = this.particles.length - 1; i >= 0; i--) {
+            const p = this.particles[i];
+            p.x += p.vx;
+            p.y += p.vy;
+            p.vy += 0.5; // Gravity
+            p.rotation += p.vRot;
+
+            this.ctx.save();
+            this.ctx.translate(p.x, p.y);
+            this.ctx.rotate(p.rotation * Math.PI / 180);
+            this.ctx.fillStyle = p.color;
+            this.ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
+            this.ctx.restore();
+
+            if (p.y > this.canvas.height) this.particles.splice(i, 1);
+        }
+
+        if (this.particles.length > 0) {
+            requestAnimationFrame(() => this.animate());
+        } else {
+            this.animating = false;
+        }
+    }
 }
 
 class JustMakeGame {
