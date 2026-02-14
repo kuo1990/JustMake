@@ -664,6 +664,19 @@ h1.logo {
     z-index: 5;
     margin-bottom: 50px;
     /* Space for fixed button */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.roll-result {
+    min-height: 1.5em;
+    /* Reserve space for one line of text */
+    margin-top: 5px;
+    font-weight: bold;
+    color: var(--text-red);
+    transition: all 0.2s;
 }
 
 /* Footer Controls */
@@ -708,8 +721,9 @@ h1.logo {
     border: 4px solid var(--text-red);
     border-radius: 20px;
     padding: 2rem;
-    width: 80%;
-    max-width: 320px;
+    width: 90%;
+    max-width: 450px;
+    /* Increased from 320px */
     text-align: center;
     box-shadow: 0 0 50px rgba(255, 0, 0, 0.3);
     position: relative;
@@ -847,4 +861,34 @@ h1.logo {
     height: 100%;
     pointer-events: none;
     z-index: 999;
+}
+
+/* Firecracker Animation */
+.firecracker-container {
+    position: fixed;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    z-index: 2000;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 10px;
+    align-items: center;
+}
+
+.firecracker {
+    font-size: 6rem;
+    animation: firecracker-pop 0.5s ease-in-out infinite alternate;
+}
+
+@keyframes firecracker-pop {
+    0% {
+        transform: scale(1) rotate(-10deg);
+    }
+
+    100% {
+        transform: scale(1.2) rotate(10deg);
+    }
 }

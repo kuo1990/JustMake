@@ -120,7 +120,7 @@ class ConfettiSystem {
 class JustMakeGame {
     constructor() {
         // Configuration
-        this.basePotPerPlayer = 210;
+        this.basePotPerPlayer = 100;
         this.cashPerPoint = 10;
         this.avatars = ['🐲', '🦁', '🧧', '💰', '🍊', '🍍', '🧨', '🏮'];
 
@@ -180,7 +180,7 @@ class JustMakeGame {
         let count = parseInt(this.ui.playerCountInput.value);
         count += delta;
         if (count < 2) count = 2;
-        if (count > 10) count = 10;
+        if (count > 20) count = 20;
         this.ui.playerCountInput.value = count;
         this.updateSetupPreview();
     }
@@ -208,6 +208,10 @@ class JustMakeGame {
 
         this.potBalance = isNaN(inputPot) ? playerCount * this.basePotPerPlayer : inputPot;
         this.currentPlayerIndex = 0;
+
+        // Clear previous game logs
+        const logList = document.getElementById('log-list');
+        logList.innerHTML = '<div class="log-entry placeholder">暫無紀錄...</div>';
 
         this.ui.setupScreen.classList.remove('active');
         this.ui.gameScreen.classList.add('active');
@@ -411,12 +415,26 @@ class JustMakeGame {
 
         this.updateGameUI();
         this.confetti.burst();
+        this.showFirecrackers(); // New Effect
         this.audio.playWin();
 
         this.showOverlay('財神到！', `恭喜 ${player.name}！\n清空獎金池 ($${amount})！\n\n通殺！每位玩家需額外支付 $40 給你！`, 'win');
 
         this.ui.overlayBtn.textContent = "再來一局";
         this.ui.overlayBtn.onclick = () => location.reload();
+    }
+
+    showFirecrackers() {
+        const container = document.createElement('div');
+        container.className = 'firecracker-container';
+        container.innerHTML = `
+            <div class="firecracker">🧨</div>
+            <div class="firecracker">🧨</div>
+        `;
+        document.body.appendChild(container);
+
+        // Remove after 5 seconds
+        setTimeout(() => container.remove(), 5000);
     }
 
     logTurn(player, points, amount, type) {
