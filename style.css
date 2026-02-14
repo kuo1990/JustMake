@@ -260,6 +260,13 @@ h1.logo {
     gap: 10px;
 }
 
+.header-center {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .game-header {
     text-align: center;
     margin-bottom: 1rem;
@@ -485,27 +492,27 @@ h1.logo {
 
 /* Map values to images */
 .die[data-value="1"] {
-    background-image: url('./assets/die_face_1.svg');
+    background-image: url('assets/die_face_1.svg');
 }
 
 .die[data-value="2"] {
-    background-image: url('./assets/die_face_2.svg');
+    background-image: url('assets/die_face_2.svg');
 }
 
 .die[data-value="3"] {
-    background-image: url('./assets/die_face_3.svg');
+    background-image: url('assets/die_face_3.svg');
 }
 
 .die[data-value="4"] {
-    background-image: url('./assets/die_face_4.svg');
+    background-image: url('assets/die_face_4.svg');
 }
 
 .die[data-value="5"] {
-    background-image: url('./assets/die_face_5.svg');
+    background-image: url('assets/die_face_5.svg');
 }
 
 .die[data-value="6"] {
-    background-image: url('./assets/die_face_6.svg');
+    background-image: url('assets/die_face_6.svg');
 }
 
 /* Hide Pips */
@@ -527,7 +534,7 @@ h1.logo {
     width: 200px;
     /* Adjust size based on design */
     height: 250px;
-    background-image: url('./assets/dice_cup_red.png');
+    background-image: url('assets/dice_cup_red.png');
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
