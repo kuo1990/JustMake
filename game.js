@@ -95,6 +95,15 @@ class JustMakeGame {
                 const s = this.audio.win;
                 s.currentTime = 0;
                 s.play().catch(() => { });
+            },
+            playMoney: () => {
+                // Reuse clack for now or add new sound
+                // Preventing crash is priority
+                const s = this.audio.roll;
+                if (s.paused) {
+                    s.currentTime = 0;
+                    s.play().catch(() => { });
+                }
             }
         };
         this.confetti = new ConfettiSystem('confetti-canvas');
@@ -464,8 +473,8 @@ class JustMakeGame {
         // We append to body to absolute position correctly on screen
         document.body.appendChild(float);
 
-        float.style.left = `${rect.left + rect.width / 2} px`;
-        float.style.top = `${rect.top} px`;
+        float.style.left = `${rect.left + rect.width / 2}px`;
+        float.style.top = `${rect.top}px`;
 
         setTimeout(() => float.remove(), 1500);
     }
