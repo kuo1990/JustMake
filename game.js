@@ -543,22 +543,22 @@ class JustMakeGame {
             const amountClass = p.moneyToken >= 0 ? 'positive' : 'negative';
 
             return `
-    < div class="rank-row ${isWinner ? 'winner' : ''}" >
+                <div class="rank-row ${isWinner ? 'winner' : ''}">
                     <div class="rank-medal">${medal}</div>
                     <div class="rank-avatar">${p.avatar}</div>
                     <div class="rank-name">${p.name}</div>
                     <div class="rank-amount ${amountClass}">$${p.moneyToken}</div>
-                </div >
-    `;
+                </div>
+            `;
         }).join('');
         rankingHTML += '</div>';
 
         const message = `
-    < div class="win-summary" >
-        <p>恭喜 ${player.name} 清空獎金池！<br>通殺全場！每位玩家額外支付 $${amount}！</p>
-            </div >
-    ${rankingHTML}
-`;
+            <div class="win-summary">
+                <p>恭喜 ${player.name} 清空獎金池！<br>通殺全場！每位玩家額外支付 $${amount}！</p>
+            </div>
+            ${rankingHTML}
+        `;
 
         this.showOverlay('🏆 最終發財榜', message, 'win');
 
@@ -590,13 +590,13 @@ class JustMakeGame {
             const amountClass = p.moneyToken >= 0 ? 'positive' : 'negative';
             const sign = p.moneyToken > 0 ? '+' : '';
             return `
-    < div class="log-entry" style = "${p.id === this.players[this.currentPlayerIndex].id ? 'background: rgba(255,215,0,0.1);' : ''}" >
+    <div class="log-entry" style="${p.id === this.players[this.currentPlayerIndex].id ? 'background: rgba(255,215,0,0.1);' : ''}">
                     <div class="log-player">
                         <span class="avatar">${p.avatar}</span>
                         <span class="name">${p.name}</span>
                     </div>
                     <div class="log-amount ${amountClass}">${sign}$${p.moneyToken}</div>
-                </div >
+                </div>
     `;
         }).join('');
     }
