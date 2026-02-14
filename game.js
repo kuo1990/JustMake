@@ -196,8 +196,8 @@ class JustMakeGame {
         const deltaZ = Math.abs(z - lastZ);
 
         // Sensitivity thresholds
-        const shakeThreshold = 5; // Start "shaking" sound
-        const throwThreshold = 25; // Trigger "throw"
+        const shakeThreshold = 15; // Increased to prevent accidental triggering
+        const throwThreshold = 40; // Harder shake to throw
 
         const speed = deltaX + deltaY + deltaZ;
 
