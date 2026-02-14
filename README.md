@@ -1,93 +1,37 @@
-# JustMake
+# 🧧 Just Make - 新春發財大賽
 
+**2026 馬年新春特別版**
+這是一款適合過年期間親朋好友一起同樂的「發財」小遊戲。遊戲節奏快、心跳加速，看誰能用運氣與膽識清空獎金池！
 
+👉 **[立即試玩 (GitHub Pages)](https://kuo1990.github.io/JustMake/)**
 
-## Getting started
+## 🎲 遊戲規則
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+### 1. 初始設定
+*   **人數**：支援 2 ~ 20 人。
+*   **獎金池**：每位玩家初始出資 **$210**。
+    *   例如 4 人局，初始獎金池為 `$840`。
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+### 2. 專屬骰子機制 (Specialized Dice)
+桌面上共有 6 顆骰子，但它們很不一樣！
+*   **第 1 顆**：只會出現 `1` 或 `空` (機率 1/6)
+*   **第 2 顆**：只會出現 `2` 或 `空` (機率 1/6)
+*   ...以此類推，直到第 6 顆。
+*   **0 點**：如果骰出全空 (0點)，直接換下一位，**不扣錢也不拿錢**。
 
-## Add your files
+### 3. 獲勝與懲罰
+每次擲骰後，根據總點數 (1點 = $10) 判定結果：
 
-* [Create](https://docs.gitlab.com/user/project/repository/web_editor/#create-a-file) or [upload](https://docs.gitlab.com/user/project/repository/web_editor/#upload-a-file) files
-* [Add files using the command line](https://docs.gitlab.com/topics/git/add_files/#add-files-to-a-git-repository) or push an existing Git repository with the following command:
+| 狀況 | 規則 | 結果 |
+| :--- | :--- | :--- |
+| **發財 (Normal)** | 點數金額 < 剩餘獎金 | 從池中**拿走**對應金額。 |
+| **倒扣 (Bounce Back)** | 點數金額 > 剩餘獎金 | **爆了！**你需要**賠付**超過的部分給獎金池。 |
+| **通殺 (Just Make)** | 點數金額 = 剩餘獎金 | **大獎！** 拿走池中所有獎金，並且**每位玩家需額外支付同等金額給你！** |
 
-```
-cd existing_repo
-git remote add origin https://gitlab.com/tom1550916/justmake.git
-git branch -M main
-git push -uf origin main
-```
+### 4. 發財榜
+右側即時顯示每位玩家的 **淨賺/淨賠** 金額。
+*   **紅色 (+)**：賺錢啦！
+*   **綠色 (-)**：加油點！
 
-## Integrate with your tools
-
-* [Set up project integrations](https://gitlab.com/tom1550916/justmake/-/settings/integrations)
-
-## Collaborate with your team
-
-* [Invite team members and collaborators](https://docs.gitlab.com/user/project/members/)
-* [Create a new merge request](https://docs.gitlab.com/user/project/merge_requests/creating_merge_requests/)
-* [Automatically close issues from merge requests](https://docs.gitlab.com/user/project/issues/managing_issues/#closing-issues-automatically)
-* [Enable merge request approvals](https://docs.gitlab.com/user/project/merge_requests/approvals/)
-* [Set auto-merge](https://docs.gitlab.com/user/project/merge_requests/auto_merge/)
-
-## Test and Deploy
-
-Use the built-in continuous integration in GitLab.
-
-* [Get started with GitLab CI/CD](https://docs.gitlab.com/ci/quick_start/)
-* [Analyze your code for known vulnerabilities with Static Application Security Testing (SAST)](https://docs.gitlab.com/user/application_security/sast/)
-* [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/topics/autodevops/requirements/)
-* [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/user/clusters/agent/)
-* [Set up protected environments](https://docs.gitlab.com/ci/environments/protected_environments/)
-
-***
-
-# Editing this README
-
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thanks to [makeareadme.com](https://www.makeareadme.com/) for this template.
-
-## Suggestions for a good README
-
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
-
-## Name
-Choose a self-explaining name for your project.
-
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
-
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
-
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
-
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
-
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
-
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
-
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
-
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
-
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
-
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
-
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
-
-## License
-For open source projects, say how it is licensed.
-
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+---
+祝大家 新春發財 萬事如意！🧨
