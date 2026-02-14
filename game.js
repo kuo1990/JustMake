@@ -404,7 +404,10 @@ class JustMakeGame {
 
         await new Promise(r => setTimeout(r, 800));
 
-        if (isCupRoll && shakeInterval) clearInterval(shakeInterval);
+        if (isCupRoll && shakeInterval) {
+            clearInterval(shakeInterval);
+            this.audio.stopShake(); // STOP the sound!
+        }
         this.ui.diceContainer.classList.remove('shaking');
 
         // 2. Land Phase
