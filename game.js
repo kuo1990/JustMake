@@ -325,6 +325,10 @@ class JustMakeGame {
         this.potBalance = isNaN(inputPot) ? playerCount * this.basePotPerPlayer : inputPot;
         this.currentPlayerIndex = 0;
 
+        // Initialize dice container with first player's prompt
+        const firstPlayerName = this.players[0].name;
+        this.ui.diceContainer.innerHTML = `<div class="placeholder-text">換 ${firstPlayerName} 試試手氣!</div>`;
+
         // Initial Leaderboard
         this.updateLeaderboard();
 
@@ -700,13 +704,6 @@ class JustMakeGame {
         // Only next turn if we closed a win overlay manually? 
         // Actually win overlay usually reloads game. 
         // If we use overlay for generic messages later, we might need this.
-    }
-
-    nextTurn() {
-        this.currentPlayerIndex = (this.currentPlayerIndex + 1) % this.players.length;
-        this.gameStatus = 'IDLE';
-        this.ui.rollBtn.disabled = false;
-        this.updateGameUI();
     }
 }
 
