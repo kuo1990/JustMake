@@ -454,7 +454,34 @@ class JustMakeGame {
         this.showFirecrackers();
         this.audio.playWin();
 
-        this.showOverlay('財神到！', `恭喜 ${player.name}！\n清空獎金池 ($${amount})！\n\n通殺！每位玩家需額外支付 $${amount} 給你！`, 'win');
+        // Generate Final Ranking HTML
+        const sortedPlayers = [...this.players].sort((a, b) => b.moneyToken - a.moneyToken);
+        let rankingHTML = '<div class="final-ranking">';
+        rankingHTML += sortedPlayers.map((p, index) => {
+            const rank = index + 1;
+            const isWinner = index === 0;
+            const medal = isWinner ? '👑' : (rank === 2 ? '🥈' : (rank === 3 ? '🥉' : `#${rank}`));
+            const amountClass = p.moneyToken >= 0 ? 'positive' : 'negative';
+
+            return `
+                <div class="rank-row ${isWinner ? 'winner' : ''}">
+                    <div class="rank-medal">${medal}</div>
+                    <div class="rank-avatar">${p.avatar}</div>
+                    <div class="rank-name">${p.name}</div>
+                    <div class="rank-amount ${amountClass}">$${p.moneyToken}</div>
+                </div>
+            `;
+        }).join('');
+        rankingHTML += '</div>';
+
+        const message = `
+            <div class="win-summary">
+                <p>恭喜 ${player.name} 清空獎金池！<br>通殺全場！每位玩家額外支付 $${amount}！</p>
+            </div>
+            ${rankingHTML}
+        `;
+
+        this.showOverlay('🏆 最終發財榜', message, 'win');
 
         this.ui.overlayBtn.textContent = "再來一局";
         this.ui.overlayBtn.onclick = () => location.reload();
@@ -499,7 +526,7 @@ class JustMakeGame {
         if (type === 'win') {
             // Full Overlay for Jackpot
             this.ui.overlayTitle.textContent = title;
-            this.ui.overlayMessage.innerText = message;
+            this.ui.overlayMessage.innerHTML = message; // Allow HTML
             this.ui.overlayContent.className = 'overlay-content win-mode';
             this.ui.overlayIcon.textContent = '🧧';
             this.ui.overlay.classList.remove('hidden');

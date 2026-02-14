@@ -848,7 +848,8 @@ h1.logo {
     color: var(--text-dark);
     font-size: 1.1rem;
     line-height: 1.6;
-    margin-bottom: 2rem;
+    margin-bottom: 0.5rem;
+    /* Reduced from 2rem */
 }
 
 .btn-secondary {
@@ -970,6 +971,74 @@ h1.logo {
         transform: scale(1.2) rotate(10deg);
     }
 }
+
+/* Final Ranking Table */
+.final-ranking {
+    margin-top: 1rem;
+    background: #FAFAFA;
+    border-radius: 15px;
+    padding: 10px;
+    max-height: 250px;
+    overflow-y: auto;
+    border: 1px solid #EEE;
+}
+
+.rank-row {
+    display: flex;
+    align-items: center;
+    padding: 0.8rem;
+    border-bottom: 1px solid #EEE;
+    font-size: 1rem;
+}
+
+.rank-row:last-child {
+    border-bottom: none;
+}
+
+.rank-row.winner {
+    background: #FFF9C4;
+    /* Light Gold */
+    border-radius: 10px;
+    font-weight: bold;
+    border: 1px solid #FFD54F;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.rank-medal {
+    font-size: 1.2rem;
+    width: 30px;
+    text-align: center;
+}
+
+.rank-avatar {
+    font-size: 1.2rem;
+    margin: 0 10px;
+}
+
+.rank-name {
+    flex: 1;
+    text-align: left;
+    color: #333;
+}
+
+.rank-amount {
+    font-weight: 800;
+}
+
+.rank-amount.positive {
+    color: #D32F2F;
+}
+
+.rank-amount.negative {
+    color: #388E3C;
+}
+
+.win-summary p {
+    font-size: 1rem;
+    color: #555;
+    margin-bottom: 15px;
+}
+
 /* Snackbar Notification */
 .snackbar {
     position: fixed;
@@ -1020,14 +1089,16 @@ h1.logo {
 .snackbar.normal {
     border-color: #FFD700;
 }
+
 .snackbar.normal .snackbar-icon {
-    text-shadow: 0 2px 0 rgba(0,0,0,0.1);
+    text-shadow: 0 2px 0 rgba(0, 0, 0, 0.1);
 }
 
 .snackbar.bounce-back {
     border-color: #D32F2F;
     background: #FFEBEE;
 }
+
 .snackbar.bounce-back .snackbar-title {
     color: #D32F2F;
 }
