@@ -75,7 +75,7 @@ class JustMakeGame {
             ctx: new (window.AudioContext || window.webkitAudioContext)(),
             shake: new Audio('dice_rolling.mp3'),
             roll: new Audio('https://assets.mixkit.co/active_storage/sfx/2003/2003-preview.mp3'),
-            win: new Audio('winner.mp3'), // Local file or fallback
+            win: new Audio('winner.mov'), // User provided file
             playShake: () => {
                 const s = this.audio.shake;
                 s.loop = true;
