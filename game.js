@@ -75,7 +75,7 @@ class JustMakeGame {
             ctx: new (window.AudioContext || window.webkitAudioContext)(),
             shake: new Audio('dice_rolling.mp3'),
             roll: new Audio('https://assets.mixkit.co/active_storage/sfx/2003/2003-preview.mp3'),
-            win: new Audio('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3'),
+            win: new Audio('winner.mp3'), // Local file or fallback
             playShake: () => {
                 const s = this.audio.shake;
                 s.loop = true;
@@ -583,9 +583,9 @@ class JustMakeGame {
         const container = document.createElement('div');
         container.className = 'firecracker-container';
         container.innerHTML = `
-    < div class="firecracker" >🧨</div >
-        <div class="firecracker">🧨</div>
-`;
+            <div class="firecracker">🧨</div>
+            <div class="firecracker">🧨</div>
+        `;
         document.body.appendChild(container);
         // Remove after 5 seconds
         setTimeout(() => container.remove(), 5000);
