@@ -453,8 +453,12 @@ class JustMakeGame {
         const dicePositions = []; // Store {top, left} for collision check
 
         for (let i = 0; i < diceCount; i++) {
-            // Standard 1-6 dice
-            const val = Math.floor(Math.random() * 6) + 1;
+            // Special dice: Die #1 shows 1 on one face (1/6 chance), die #2 shows 2 on one face, etc.
+            // Each die has only ONE face with its number, other 5 faces are blank (0)
+            const dieNumber = i + 1; // This die represents number 1-6
+            const roll = Math.random(); // 0 to 1
+            const val = roll < (1 / 6) ? dieNumber : 0; // 1/6 chance to show the number, 5/6 chance blank
+
             rolls.push(val);
 
             const die = this.createDieHTMLElement(val, dicePositions);
