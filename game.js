@@ -428,6 +428,13 @@ class JustMakeGame {
     async playTurn(isCupRoll = false) {
         if (this.gameStatus !== 'IDLE') return;
 
+        // Immediately hide snackbar and clear timeout if user wants to roll again
+        if (this.snackbarTimeout) {
+            clearTimeout(this.snackbarTimeout);
+            this.snackbarTimeout = null;
+            document.getElementById('snackbar').classList.add('hidden');
+        }
+
         this.gameStatus = 'ROLLING';
         this.ui.rollBtn.disabled = true;
         this.audio.stopShake(); // Ensure shake sound stops
